@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="ru">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Профессор Мориарти ///</title>
+  <meta name="description" content="то о чем ты думаешь"/>
+  <meta name="keywords" content="Профессор Мориарти, Мориарти, телеграмм" />
+  <meta name="author" content="Professor Moriarty Team" />
+  <meta name="robots" content="index, follow" />
+  <link rel="icon" type="image/x-icon" href="./favicon.ico">
+  <style>
+    :root {
+      --bg: #f9f9f9;
+      --text: #333;
+      --link: red;
+      --news-bg: #fff;
+      --date: #888;
+      --desc: #555;
+      --header-bg: #fff;
+      --footer-bg: #343a40;
+      --footer-text: #fff;
+      --shadow: rgba(0, 0, 0, 0.05);
+    }
+
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg: #121212;
+        --text: #e0e0e0;
+        --link: gold;
+        --news-bg: #1e1e1e;
+        --date: #aaa;
+        --desc: #ccc;
+        --header-bg: #1e1e1e;
+        --footer-bg: #000;
+        --footer-text: #ccc;
+        --shadow: rgba(255, 255, 255, 0.05);
+      }
+    }
+
+    body {
+      font-family: 'Roboto', sans-serif;
+      margin: 0;
+      line-height: 1.6;
+      color: var(--text);
+      background-color: var(--bg);
+    }
+
+    .container {
+      width: auto;
+      max-width: 800px;
+      margin: 0 auto;
+      padding: 1rem;
+    }
+
+    a {
+      color: var(--link);
+      text-decoration: none;
+    }
+
+    img {
+      width: 100%;
+      height: auto;
+      display: block;
+      border-radius: 5px;
+    }
+
+    header {
+      background-color: var(--header-bg);
+      padding: 0.5rem 0;
+      border-bottom: 1px solid #4444;
+      position: sticky;
+      top: 0;
+      z-index: 100;
+    }
+
+    header .container {
+      display: flex;
+      justify-content: center;
+      align-items: center;
+    }
+
+    .logo a {
+      font-size: 1.5rem;
+      font-weight: 700;
+      color: var(--text);
+    }
+
+    .logo span {
+      color: var(--link);
+    }
+
+    .news-feed {
+      padding: 1rem 0;
+    }
+
+    .news-item {
+      background-color: var(--news-bg);
+      margin-bottom: 1.5rem;
+      padding: 1rem;
+      border-radius: 5px;
+      box-shadow: 0 2px 5px var(--shadow);
+    }
+
+    .news-item h2 {
+      font-size: 1.2rem;
+      margin-bottom: 0.5rem;
+      line-height: 1.3;
+    }
+
+    .news-item p {
+      color: var(--desc);
+    }
+
+    .news-item .date {
+      font-size: 0.8rem;
+      color: var(--date);
+      margin-top: 0.5rem;
+      display: block;
+    }
+
+    footer {
+      background-color: var(--footer-bg);
+      color: var(--footer-text);
+      text-align: center;
+      padding: 1rem 0;
+      margin-top: 2rem;
+    }
+
+.imgx {
+  position: relative;
+  width: 100%;
+  padding-top: 56.25%; /* 16:9 */
+  background-size: cover;
+  background-position: center;
+  border-radius: 5px;
+  margin-bottom: 0.5rem;
+  overflow: hidden;
+}
+
+.media-wrapper {
+  width: 100%;
+  max-height: 400px;
+  margin-bottom: 0.5rem;
+  border-radius: 5px;
+  overflow: hidden;
+}
+
+.video-player {
+  width: 100%;
+  height: auto;
+  max-height: 400px;
+  border-radius: 5px;
+  background: #000;
+  display: block;
+}
+
+@media screen and (max-width: 600px) {
+  .imgx,
+  .video-player {
+    max-height: 250px;
+  }
+}
+
+header.hide {
+  transform: translateY(-100%);
+  transition: transform 0.3s ease;
+}
+
+  </style>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
+</head>
+<body>
+
+  <header>
+    <div class="container">
+      <div class="logo">
+        <a href="/">Новости<span> ///</span></a>
+      </div>
+    </div>
+  </header>
+
+  <main>
+    <section class="news-feed">
+      <div class="container" id="newsContainer">
+        <!-- Новости загружаются из info.json -->
+      </div>
+    </section>
+  </main>
+
+  <footer>
+    <div class="container">
+      <p>tg: @fasterqd</p>
+    </div>
+  </footer>
+
+  <script>
+    async function loadNews() {
+      const container = document.getElementById('newsContainer');
+      try {
+        const response = await fetch('info.json');
+        const newsData = await response.json();
+
+        newsData.forEach(item => {
+          const dateParts = item.date.split('.').map(Number);
+          item.date = new Date(dateParts[2], dateParts[1] - 1, dateParts[0]);
+        });
+
+        newsData.sort((a, b) => b.date - a.date);
+
+        newsData.forEach(news => {
+          const formattedDescription = news.description.replace(/\n/g, "<br>");
+          const article = document.createElement('article');
+          article.classList.add('news-item');
+
+          let mediaContent = '';
+
+if (news.video) {
+  mediaContent = `
+    <video class="video-player" controls preload="metadata" poster="${news.image || ''}">
+      <source src="${news.video}" type="video/mp4">
+      Ваш браузер не поддерживает видео.
+    </video>
+  `;
+} else if (news.image) {
+  mediaContent = `<div class="imgx" style="background-image: url('${news.image}');"></div>`;
+}
+
+article.innerHTML = `
+  ${mediaContent}
+  <p>${formattedDescription}</p>
+  <span class="date">${news.date.toLocaleDateString()}</span>
+`;
+
+          container.appendChild(article);
+        });
+
+      } catch (error) {
+        console.error("Ошибка при загрузке info.json:", error);
+        container.textContent = "Не удалось загрузить новости.";
+      }
+    }
+
+    loadNews();
+  </script>
+  <script>
+  let lastScrollTop = 0;
+  const header = document.querySelector('header');
+
+  window.addEventListener('scroll', () => {
+    const scrollTop = window.pageYOffset || document.documentElement.scrollTop;
+
+    if (scrollTop > lastScrollTop && scrollTop > 50) {
+      // Скроллим вниз — скрываем шапку
+      header.classList.add('hide');
+    } else {
+      // Скроллим вверх — показываем шапку
+      header.classList.remove('hide');
+    }
+
+    lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // не допустить отрицательного значения
+  });
+</script>
+
+</body>
+</html>
