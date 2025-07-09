@@ -273,7 +273,7 @@ header.hide {
     async function loadNews() {
       const container = document.getElementById('newsContainer');
       try {
-        const response = await fetch('info.json');
+        const response = await fetch('info.json?0.0.1');
         const newsData = await response.json();
 
         newsData.forEach(item => {
