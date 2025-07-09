@@ -166,6 +166,75 @@ header.hide {
   transform: translateY(-100%);
   transition: transform 0.3s ease;
 }
+.telegram-banner {
+  position: fixed;
+  top: 100px;
+  right: 20px;
+  display: flex;
+  align-items: center;
+  background: var(--header-bg);
+  color: var(--text);
+  padding: 10px 15px;
+  border-radius: 8px;
+  box-shadow: 0 2px 8px var(--shadow);
+  text-decoration: none;
+  z-index: 999;
+  transition: transform 0.3s ease, opacity 0.3s ease;
+}
+
+.telegram-banner img {
+  width: 24px;
+  height: 24px;
+  margin-right: 10px;
+}
+
+.telegram-banner span {
+  font-weight: 500;
+  font-size: 14px;
+}
+
+.telegram-mobile {
+  display: none;
+}
+
+@media screen and (max-width: 800px) {
+  .telegram-mobile {
+    position: fixed;
+    bottom: 15px;
+    left: 50%;
+    transform: translateX(-50%);
+    background: var(--link);
+    color: white;
+    padding: 10px 16px;
+    border-radius: 30px;
+    font-size: 15px;
+    font-weight: 500;
+    display: flex;
+    align-items: center;
+    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
+    z-index: 999;
+    animation: slideUp 0.6s ease-out;
+    text-decoration: none;
+  }
+
+  .telegram-mobile img {
+    width: 20px;
+    height: 20px;
+    margin-right: 10px;
+  }
+
+  @keyframes slideUp {
+    from {
+      transform: translateX(-50%) translateY(100%);
+      opacity: 0;
+    }
+    to {
+      transform: translateX(-50%) translateY(0);
+      opacity: 1;
+    }
+  }
+
+
 
   </style>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
@@ -180,6 +249,12 @@ header.hide {
         <a href="/">Новости<span> ///</span></a>
       </div>
     </div>
+	<a href="https://t.me/MORIAPPBOT?start=4NJ9Q5" target="_blank" class="telegram-banner">
+  <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram" />
+  <span>Telegram</span>
+</a>
+
+
   </header>
 
   <main>
@@ -189,12 +264,6 @@ header.hide {
       </div>
     </section>
   </main>
-
-  <footer>
-    <div class="container">
-      <p>tg: @moriarty_pw</p>
-    </div>
-  </footer>
 
   <script>
     async function loadNews() {
