@@ -1,4 +1,3 @@
-<!DOCTYPE html>
 <html lang="ru">
 <head>
   <meta charset="UTF-8" />
@@ -27,6 +26,78 @@
       --shadow: rgba(0, 0, 0, 0.05);
     }
 
+    .mori-widget {
+    display: flex;
+    align-items: center;
+    border-radius: 10px;
+    width: fit-content;
+    flex-direction: row;
+    position: absolute;
+	padding-left: 3px;
+	top: 1px;
+	left: 1px;
+	
+    }
+
+    .mori-icon {
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      margin-right: 10px;
+    }
+
+    .mori-info {
+      display: flex;
+      flex-direction: column;
+    }
+
+    .mori-header {
+      font-weight: 700;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      gap: 6px;
+    }
+
+    .mori-symbol {
+      color: #a0a0a0;
+      font-size: 12px;
+    }
+
+    .mori-rank {
+      background: #f0f2f5;
+      padding: 2px 6px;
+      border-radius: 6px;
+      font-size: 11px;
+      color: #555;
+    }
+
+    .mori-price-row {
+      display: flex;
+      align-items: center;
+      gap: 5px;
+    }
+
+    .mori-price {
+      font-size: 20px;
+      font-weight: bold;
+    }
+
+    .mori-change.up {
+      color: #16c784;
+	  font-size: 10px;
+    }
+
+    .mori-change.down {
+      color: #ea3943;
+	  font-size: 10px;
+    }
+
+    .mori-rub {
+      font-size: 14px;
+      color: #555;
+    }
+	
     @media (prefers-color-scheme: dark) {
       :root {
         --bg: #121212;
@@ -171,61 +242,18 @@ header.hide {
   transition: transform 0.3s ease;
 }
 .telegram-banner {
-  position: fixed;
-  top: 100px;
-  right: 20px;
-  display: flex;
-  align-items: center;
-  background: var(--header-bg);
-  color: var(--text);
-  padding: 10px 15px;
-  border-radius: 8px;
-  box-shadow: 0 2px 8px var(--shadow);
-  text-decoration: none;
-  z-index: 999;
-  transition: transform 0.3s ease, opacity 0.3s ease;
+    position: absolute;
+    top: 20px;
+    right: 20px;
+    z-index: 200;
 }
 
 .telegram-banner img {
-  width: 24px;
-  height: 24px;
-  margin-right: 10px;
-}
-
-.telegram-banner span {
-  font-weight: 500;
-  font-size: 14px;
-}
-
-.telegram-mobile {
-  display: none;
+  width: 40px;
+    height: 40px;
 }
 
 @media screen and (max-width: 800px) {
-  .telegram-mobile {
-    position: fixed;
-    bottom: 15px;
-    left: 50%;
-    transform: translateX(-50%);
-    background: var(--link);
-    color: white;
-    padding: 10px 16px;
-    border-radius: 30px;
-    font-size: 15px;
-    font-weight: 500;
-    display: flex;
-    align-items: center;
-    box-shadow: 0 4px 10px rgba(0,0,0,0.3);
-    z-index: 999;
-    animation: slideUp 0.6s ease-out;
-    text-decoration: none;
-  }
-
-  .telegram-mobile img {
-    width: 20px;
-    height: 20px;
-    margin-right: 10px;
-  }
 
   @keyframes slideUp {
     from {
@@ -246,8 +274,22 @@ header.hide {
   <link href="https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap" rel="stylesheet" />
 </head>
 <body>
-
   <header>
+    <div class="mori-widget" id="mori-widget">
+    <img src="mori.png" alt="Mori Coin" class="mori-icon">
+    <div class="mori-info">
+      <div class="mori-header">
+        <span>MORI COIN</span>
+        <span class="mori-symbol">Solana</span>
+        <span class="mori-rank">#428</span>
+      </div>
+        <span class="mori-price" id="mori-price-usd">$--</span>
+	  <div class="mori-price-row">
+      <div class="mori-rub" id="mori-price-rub">₽--</div>
+	  <span class="mori-change" id="mori-change">--%</span>
+	   </div>
+    </div>
+  </div>
     <div class="container">
       <div class="logo">
         <a href="/">Новости<span> ///</span></a>
@@ -255,11 +297,11 @@ header.hide {
     </div>
 	<a href="https://t.me/MORIAPPBOT?start=HQ7QVU" target="_blank" class="telegram-banner">
   <img src="https://cdn-icons-png.flaticon.com/512/2111/2111646.png" alt="Telegram" />
-  <span>Telegram</span>
 </a>
 
 
   </header>
+  
 
   <main>
     <section class="news-feed">
@@ -336,6 +378,39 @@ article.innerHTML = `
     lastScrollTop = scrollTop <= 0 ? 0 : scrollTop; // не допустить отрицательного значения
   });
 </script>
+
+  <script>
+    async function fetchMoriPrice() {
+      try {
+        const res = await fetch('https://itana.pw:6004/get_mori_price');
+        const data = await res.json();
+
+        const usd = data.usd_price;
+        const rub = data.rub_price;
+        const change = data.usd_change;
+
+        // USD
+        document.getElementById('mori-price-usd').textContent = `$${usd.toFixed(4)}`;
+
+        // RUB
+        document.getElementById('mori-price-rub').textContent = `₽${rub.toFixed(2)}`;
+
+        // Изменение
+        const changeEl = document.getElementById('mori-change');
+        const sign = change >= 0 ? '+' : '';
+        changeEl.textContent = `${sign}${change.toFixed(2)}%`;
+        changeEl.className = 'mori-change ' + (change >= 0 ? 'up' : 'down');
+      } catch (err) {
+        console.error('Ошибка:', err);
+        document.getElementById('mori-price-usd').textContent = 'Ошибка';
+        document.getElementById('mori-price-rub').textContent = 'Ошибка';
+        document.getElementById('mori-change').textContent = '--%';
+      }
+    }
+
+    fetchMoriPrice();
+    setInterval(fetchMoriPrice, 300000); // каждые 5 минут
+  </script>
 
 </body>
 </html>
